@@ -1,12 +1,15 @@
 #!/bin/bash
 
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+
 # Start backend
-cd "$(dirname "$0")/backend"
+cd "$ROOT/backend"
 /Users/nate/.venv/bin/uvicorn main:app --reload &
 BACKEND_PID=$!
 
 # Start frontend
-cd "$(dirname "$0")/frontend"
+cd "$ROOT/frontend"
+npm install
 npm run dev &
 FRONTEND_PID=$!
 
@@ -18,3 +21,5 @@ echo "Press Ctrl+C to stop both servers."
 
 trap "kill $BACKEND_PID $FRONTEND_PID" EXIT
 wait
+
+# ./start.sh to run both servers, and Ctrl+C to stop them.
