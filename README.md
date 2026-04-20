@@ -20,7 +20,7 @@ Most people are unaware that over 31% of shark species worldwide are threatened 
 OceanDex is built with a modern, cross-platform stack designed for performance and scalability:
 
 React (Frontend)
-Python / FastAPI
+Python and FastAPI
 CSS & JavaScript
 PostgreSQL
 
