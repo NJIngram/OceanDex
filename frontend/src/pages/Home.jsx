@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import SpeciesListItem from '../components/SpeciesListItem'
 import SpeciesDetailPanel from '../components/SpeciesDetailPanel'
 import SpeciesCard from '../components/SpeciesCard'
+import HabitatRangeMap from '../components/HabitatRangeMap'
 import { CATEGORIES } from '../utils/constants'
 
 export default function Explore() {
@@ -116,10 +117,10 @@ export default function Explore() {
 
       <aside className="right-panel">
         <div className="right-section">
-          <p className="right-label">HABITAT RANGE</p>
-          <div className="map-placeholder">
-            <span>World Map</span>
-          </div>
+          <HabitatRangeMap
+            habitat={detail?.habitat}
+            name={detail?.common_name}
+          />
         </div>
 
         {detail?.conservation?.aware_fact && (
