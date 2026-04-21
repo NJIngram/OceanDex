@@ -1026,3 +1026,65 @@ a { text-decoration: none; color: inherit; }
   color: var(--gray-400);
   font-size: 0.875rem;
 }
+
+.map-wrapper {
+  height: 600px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 0 24px 24px;
+}
+
+.map-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 0 24px 16px;
+  flex-wrap: wrap;
+}
+
+.map-filter-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1.5px solid #334155;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.map-filter-btn.active {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+.map-creature-select {
+  margin-left: auto;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #334155;
+  background: #0f172a;
+  color: #f1f5f9;
+  font-size: 0.85rem;
+}
+
+.map-legend {
+  display: flex;
+  gap: 16px;
+  padding: 12px 24px 24px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
