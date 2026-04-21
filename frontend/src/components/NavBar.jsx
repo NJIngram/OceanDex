@@ -14,7 +14,7 @@ export default function NavBar() {
 
   useEffect(() => {
     if (facts.length < 30) return
-    const id = setInterval(() => setIndex(i => (i + 1) % facts.length), 4000)
+    const id = setInterval(() => setIndex(i => (i + 1) % facts.length), 30000)
     return () => clearInterval(id)
   }, [facts])
 

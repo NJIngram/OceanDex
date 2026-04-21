@@ -101,3 +101,26 @@ class SeaCreatureDetail(BaseModel):
 
     class Config:
         from_attributes = True
+
+class HabitatRangeOut(BaseModel):
+    creature_id: int
+    common_name: str
+    depth_min_m: Optional[float]
+    depth_max_m: Optional[float]
+    migratory: bool
+    habitat: Optional[str]
+    regions: List[RegionCreatureOut] = []
+
+    class Config:
+        from_attributes = True
+
+class MapCreatureOut(BaseModel):
+    id: int
+    common_name: str
+    scientific_name: str
+    category: str
+    image_url: Optional[str]
+    region_associations: List[RegionCreatureOut] = []
+
+    class Config:
+        from_attributes = True

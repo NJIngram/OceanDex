@@ -1,5 +1,22 @@
+import requests
 from database import SessionLocal, engine
 import models
+
+
+def fetch_image_url(scientific_name):
+    """Fetch a species photo URL from iNaturalist by scientific name."""
+    try:
+        resp = requests.get(
+            "https://api.inaturalist.org/v1/taxa",
+            params={"q": scientific_name, "per_page": 1, "rank": "species"},
+            timeout=8,
+        )
+        results = resp.json().get("results", [])
+        if results and results[0].get("default_photo"):
+            return results[0]["default_photo"]["medium_url"]
+    except Exception:
+        pass
+    return None
 
 models.Base.metadata.create_all(bind=engine)
 db = SessionLocal()
@@ -56,6 +73,9 @@ def add_creature(data):
     regs = data.pop("regulations", [])
     region_assocs = data.pop("region_assocs", [])
     conservation = data.pop("conservation", None)
+
+    if "image_url" not in data or data["image_url"] is None:
+        data["image_url"] = fetch_image_url(data.get("scientific_name", ""))
 
     c = models.SeaCreature(**data)
     db.add(c)
