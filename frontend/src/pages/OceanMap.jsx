@@ -62,11 +62,19 @@ export default function OceanMap() {
           {cat.charAt(0).toUpperCase() + cat.slice(1)}
         </button>
       ))}
-    </div>
 
-        >
-          {c}
-        </button>
-      ))}
+      <select
+        className="map-creature-select"
+        value={selected?.id ?? ''}
+        onChange={e => {
+          const id = parseInt(e.target.value)
+          setSelected(creatures.find(c => c.id === id) || null)
+          setActiveCategory('all')
+        }}
+      >
+        <option value="">- All species -</option>
+        {[...creatures]
+          .sort((a, b) => a.common_name.localeCompare(b.common_name))
+          .map(c => <option key={c.id} value={c.id}>{c.common_name}</option>)}
+      </select>
     </div>
-  )
