@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Tooltip, Circle, CircleMarker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
 const REGION_COORDS = {
@@ -77,4 +77,46 @@ export default function OceanMap() {
           .sort((a, b) => a.common_name.localeCompare(b.common_name))
           .map(c => <option key={c.id} value={c.id}>{c.common_name}</option>)}
       </select>
+    </div>
+
+    <div className="map-wrapper">
+      <MapContainer center={[39.2, -75.2]} zoom={7} style={{ height: '100%', width: '100%' }}>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {pins.map((pin, i) => (
+          <CircleMarker
+            key={`${pin.creature.id}-${i}`}
+            center={pin.coords}
+            radius={selected ? 12 : 8}
+            pathOptions={{
+              fillColor: CATEGORY_COLORS[pin.creature.category] || '#006994',
+              fillOpacity: 0.85,
+              color: '#1e293b',
+              weight: 1.5,
+            }}
+          >
+            <Tooltip direction="top" offset={[0, -6]}>
+              <strong>{pin.creature.common_name}</strong><br />
+              {pin.assoc.region?.name}
+              {pin.assoc.abundance && <>br />Abundance: {pin.assoc.abundance}</>}
+            </Tooltip>
+            <Popup>
+              <div style={{ minWidth: 160 }}>
+                {pin.creature.image_url && (
+                  <img src={pin.creature.image_url} alt={pin.creature.common_name}
+                    style={{ width: '100%', borderRadius: 4, marginBottom: 6 }} />
+                )}
+                <strong>{pin.creature.common_name}</strong><br />
+                <em style={{ fontSize: '0.8em', color: '#64748b' }}>{pin.creature.scientific_name}</em>
+                <br /><br />
+                <strong>Region:</strong> {pin.assoc.region?.name}<br />
+                {pin.assoc.abundance && <><strong>Abundance:</strong> {pin.assoc.abundance}<br /></>}
+                {pin.assoc.notes && <><strong>Season:</strong> {pin.assoc.best_season}<br /></>}
+              </div>
+            </Popup>
+          </CircleMarker>
+        ))}
+      </MapContainer>
     </div>
