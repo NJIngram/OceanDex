@@ -1,5 +1,16 @@
 import { useState } from 'react'
 import { STATUS_COLORS } from '../utils/constants'
+import HabitatRangeMap from './HabitatRangeMap'
+
+const REGION_COORDS = {
+  'Chesapeake Bay':            { lat: 37.8,  lng: -76.1  },
+  'Ocean City Atlantic Coast': { lat: 38.33, lng: -74.9  },
+  'Delaware Bay':              { lat: 39.1,  lng: -75.35 },
+  'Rehoboth Beach Shelf':      { lat: 38.65, lng: -74.95 },
+  'Sandy Hook Bay':            { lat: 40.45, lng: -74.0  },
+  'Barnegat Bay':              { lat: 39.77, lng: -74.1  },
+  'NJ Atlantic Shelf':         { lat: 39.4,  lng: -73.6  },
+}
 
 const TABS = ['Overview', 'Legal & Regs', 'Ecology', 'Conservation']
 
@@ -164,8 +175,26 @@ function LegalTab({ c }) {
 function EcologyTab({ c }) {
   const assocs = c.region_associations || []
 
+  const mapMarkers = assocs
+    .map(a => {
+      const coords = REGION_COORDS[a.region?.name]
+      return coords ? { lat: coords.lat, lng: coords.lng, label: a.region.name } : null
+    })
+    .filter(Boolean)
+    .slice(0, 3)
+
+  const stateNames = [...new Set(assocs.map(a => a.region?.state?.name).filter(Boolean))]
+  const mapCaption = stateNames.length
+    ? stateNames.join(' · ') + ' waters'
+    : 'Mid-Atlantic coast'
+
   return (
     <div className="tab-content">
+      {mapMarkers.length > 0 && (
+        <div className="ecology-section">
+          <HabitatRangeMap markers={mapMarkers} caption={mapCaption} />
+        </div>
+      )}
       {c.habitat && (
         <div className="ecology-section">
           <p className="section-label">HABITAT</p>
