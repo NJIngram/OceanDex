@@ -132,52 +132,77 @@ export default function OceanMap() {
   const zoomOut = () => setZoom(prev => clamp(prev / 1.5,     MIN_ZOOM, MAX_ZOOM))
   const reset   = () => { setZoom(1); setRot([0, 0]) }
 
-  // ── Build pin list ────────────────────────────────────────────────────────
+  // ── Build pin list / region clusters ─────────────────────────────────────
 
   const filtered = activeCategory === 'all'
     ? creatures
     : creatures.filter(c => c.category === activeCategory)
 
-  const toShow = selected ? [selected] : filtered
+  const toShow      = selected ? [selected] : filtered
+  const clusterMode = activeCategory === 'all' && !selected
 
+  // Cluster mode: one circle per region listing all creatures inside
+  const regionClusters = (() => {
+    if (!clusterMode) return null
+    const map = {}
+    creatures.forEach(creature => {
+      creature.region_associations.forEach(a => {
+        const coords = REGION_COORDS[a.region?.name]
+        if (!coords) return
+        const key = a.region.name
+        if (!map[key]) map[key] = { name: key, coords, creatures: [] }
+        if (!map[key].creatures.find(c => c.id === creature.id))
+          map[key].creatures.push(creature)
+      })
+    })
+    return Object.values(map)
+  })()
+
+  // Pin mode: individual scattered pins (category filter or single species selected)
   const regionCounts = {}
   const pins = []
-  toShow.forEach(creature => {
-    creature.region_associations.forEach(a => {
-      const coords = REGION_COORDS[a.region?.name]
-      if (!coords) return
-      const key = a.region.name
-      regionCounts[key] = (regionCounts[key] || 0) + 1
-      pins.push({ coords: [...coords], creature, assoc: a, regionKey: key })
+  if (!clusterMode) {
+    toShow.forEach(creature => {
+      creature.region_associations.forEach(a => {
+        const coords = REGION_COORDS[a.region?.name]
+        if (!coords) return
+        const key = a.region.name
+        regionCounts[key] = (regionCounts[key] || 0) + 1
+        pins.push({ coords: [...coords], creature, assoc: a, regionKey: key })
+      })
     })
-  })
 
-  const regionIndexes = {}
-  pins.forEach(pin => {
-    const key   = pin.regionKey
-    const total = regionCounts[key]
-    const idx   = regionIndexes[key] ?? 0
-    regionIndexes[key] = idx + 1
-    if (total > 1) {
-      const angle  = (2 * Math.PI * idx) / total
-      const radius = 0.08 + Math.floor(idx / 8) * 0.05
-      pin.coords = [
-        pin.coords[0] + radius * Math.cos(angle),
-        pin.coords[1] + radius * Math.sin(angle),
-      ]
-    }
-  })
+    const regionIndexes = {}
+    pins.forEach(pin => {
+      const key   = pin.regionKey
+      const total = regionCounts[key]
+      const idx   = regionIndexes[key] ?? 0
+      regionIndexes[key] = idx + 1
+      if (total > 1) {
+        const angle  = (2 * Math.PI * idx) / total
+        const radius = 0.22 + Math.floor(idx / 8) * 0.12
+        pin.coords = [
+          pin.coords[0] + radius * Math.cos(angle),
+          pin.coords[1] + radius * Math.sin(angle),
+        ]
+      }
+    })
+  }
 
   // ── Render ────────────────────────────────────────────────────────────────
 
-  // Stroke widths scale down with zoom to keep geo lines crisp; pins stay constant
-  const sw      = (base) => Math.max(0.08, base / zoom)
-  const pinR    = 3.5
-  const pinRHov = 5
-  const pingR   = 6
+  // Stroke widths scale down with zoom to keep geo lines crisp
+  // Pins scale up gently with zoom using a dampened curve (^0.35) to avoid growing too large
+  const sw        = (base) => Math.max(0.08, base / zoom)
+  const pinScale  = Math.pow(zoom, 0.35)
+  const pinR      = 3.5 * pinScale
+  const pinRHov   = 5   * pinScale
+  const pingR     = 6   * pinScale
+  const clusterR  = 14  * Math.pow(zoom, 0.6)
 
-  // Tooltip: compute position fresh each render using current proj
-  const hovPos = hovered ? proj([hovered.pin.coords[1], hovered.pin.coords[0]]) : null
+  // Tooltip position — works for both pin and cluster hover
+  const hovCoords = hovered?.pin ? hovered.pin.coords : hovered?.cluster?.coords ?? null
+  const hovPos    = hovCoords ? proj([hovCoords[1], hovCoords[0]]) : null
 
   return (
     <div className="ocean-map-page">
@@ -258,44 +283,77 @@ export default function OceanMap() {
             <path d={landD}    fill="#1a3a4a" stroke="#122a38" strokeWidth={sw(0.5)} />
             <path d={bordersD} fill="none"    stroke="#0e2a3a" strokeWidth={sw(0.3)} />
 
-            {/* Pins */}
+            {/* Clusters (all mode) or Pins (category / selected mode) */}
             <g style={{ pointerEvents: isDragging ? 'none' : 'auto' }}>
-              {pins.map((pin, i) => {
-                const [lat, lng] = pin.coords
-                const pos = proj([lng, lat])
-                if (!pos) return null
-                const [mapX, mapY] = pos
-                const color = CATEGORY_COLORS[pin.creature.category] || '#94a3b8'
-                const isHov = hovered?.pin === pin
-
-                return (
-                  <g
-                    key={`${pin.creature.id}-${i}`}
-                    transform={`translate(${mapX},${mapY})`}
-                    style={{ cursor: 'pointer' }}
-                    onMouseEnter={() => setHovered({ pin })}
-                    onMouseLeave={() => setHovered(null)}
-                  >
-                    {isHov && (
-                      <circle
-                        r={pingR}
-                        fill="none"
-                        stroke={color}
-                        strokeOpacity="0.45"
-                        strokeWidth={sw(1.5)}
-                        style={{ animation: 'om-ping 1.4s ease-out infinite', transformOrigin: '0px 0px' }}
-                      />
-                    )}
-                    <circle
-                      r={isHov ? pinRHov : pinR}
-                      fill={color}
-                      opacity={isHov ? 1 : 0.85}
-                      stroke={isHov ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)'}
-                      strokeWidth={sw(isHov ? 1 : 0.7)}
-                    />
-                  </g>
-                )
-              })}
+              {clusterMode
+                ? regionClusters.map(cluster => {
+                    const pos = proj([cluster.coords[1], cluster.coords[0]])
+                    if (!pos) return null
+                    const [mapX, mapY] = pos
+                    const isHov = hovered?.cluster === cluster
+                    return (
+                      <g
+                        key={cluster.name}
+                        transform={`translate(${mapX},${mapY})`}
+                        style={{ cursor: 'pointer' }}
+                        onMouseEnter={() => setHovered({ cluster })}
+                        onMouseLeave={() => setHovered(null)}
+                      >
+                        <circle
+                          r={clusterR}
+                          fill={isHov ? 'rgba(91,200,245,0.18)' : 'rgba(91,200,245,0.08)'}
+                          stroke={isHov ? 'rgba(91,200,245,0.7)' : 'rgba(91,200,245,0.35)'}
+                          strokeWidth={sw(1.2)}
+                        />
+                        <text
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          fontSize={Math.max(4, 6 * pinScale)}
+                          fill="rgba(91,200,245,0.8)"
+                          fontFamily="monospace"
+                          style={{ pointerEvents: 'none', userSelect: 'none' }}
+                        >
+                          {cluster.creatures.length}
+                        </text>
+                      </g>
+                    )
+                  })
+                : pins.map((pin, i) => {
+                    const [lat, lng] = pin.coords
+                    const pos = proj([lng, lat])
+                    if (!pos) return null
+                    const [mapX, mapY] = pos
+                    const color = CATEGORY_COLORS[pin.creature.category] || '#94a3b8'
+                    const isHov = hovered?.pin === pin
+                    return (
+                      <g
+                        key={`${pin.creature.id}-${i}`}
+                        transform={`translate(${mapX},${mapY})`}
+                        style={{ cursor: 'pointer' }}
+                        onMouseEnter={() => setHovered({ pin })}
+                        onMouseLeave={() => setHovered(null)}
+                      >
+                        {isHov && (
+                          <circle
+                            r={pingR}
+                            fill="none"
+                            stroke={color}
+                            strokeOpacity="0.45"
+                            strokeWidth={sw(1.5)}
+                            style={{ animation: 'om-ping 1.4s ease-out infinite', transformOrigin: '0px 0px' }}
+                          />
+                        )}
+                        <circle
+                          r={isHov ? pinRHov : pinR}
+                          fill={color}
+                          opacity={isHov ? 1 : 0.85}
+                          stroke={isHov ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)'}
+                          strokeWidth={sw(isHov ? 1 : 0.7)}
+                        />
+                      </g>
+                    )
+                  })
+              }
             </g>
           </g>
 
@@ -304,39 +362,66 @@ export default function OceanMap() {
 
           {/* Tooltip — rendered in root SVG coords, always current via proj */}
           {hovered && hovPos && (() => {
-            const { pin } = hovered
             const [sx, sy] = hovPos
+            const BOX_W  = 190
+            const LINE_H = 15
+            const PAD    = 10
+
+            if (hovered.cluster) {
+              const { cluster } = hovered
+              const MAX_SHOW = 8
+              const shown    = cluster.creatures.slice(0, MAX_SHOW)
+              const extra    = cluster.creatures.length - MAX_SHOW
+              const BOX_H    = (1 + shown.length + (extra > 0 ? 1 : 0)) * LINE_H + PAD * 2 - 4
+              const showAbove = sy > BOX_H + 16
+              const tipX = clamp(sx + 10, 4, W - BOX_W - 4)
+              const tipY = showAbove ? sy - BOX_H - 10 : sy + 10
+              return (
+                <g pointerEvents="none">
+                  <rect x={tipX} y={tipY} width={BOX_W} height={BOX_H} rx="4"
+                    fill="rgba(4,18,31,0.93)" stroke="rgba(91,200,245,0.25)" strokeWidth="1" />
+                  <text x={tipX + PAD} y={tipY + PAD + 4}
+                    fontSize="11" fill="#5bc8f5" fontWeight="bold" fontFamily="monospace">
+                    {cluster.name}
+                  </text>
+                  {shown.map((c, i) => (
+                    <text key={c.id} x={tipX + PAD} y={tipY + PAD + 4 + (i + 1) * LINE_H}
+                      fontSize="10" fontFamily="monospace"
+                      fill={CATEGORY_COLORS[c.category] || '#94a3b8'}>
+                      · {c.common_name}
+                    </text>
+                  ))}
+                  {extra > 0 && (
+                    <text x={tipX + PAD} y={tipY + PAD + 4 + (shown.length + 1) * LINE_H}
+                      fontSize="10" fill="rgba(200,235,255,0.45)" fontFamily="monospace">
+                      +{extra} more
+                    </text>
+                  )}
+                </g>
+              )
+            }
+
+            const { pin } = hovered
             const lines = [
               pin.creature.common_name,
               pin.assoc.region?.name,
               pin.assoc.abundance   ? `Abundance: ${pin.assoc.abundance}`  : null,
               pin.assoc.best_season ? `Season: ${pin.assoc.best_season}`   : null,
             ].filter(Boolean)
-
-            const BOX_W  = 180
-            const LINE_H = 16
-            const PAD    = 10
-            const BOX_H  = lines.length * LINE_H + PAD * 2 - 4
+            const BOX_H = lines.length * LINE_H + PAD * 2 - 4
             const showAbove = sy > BOX_H + 16
             const tipX = clamp(sx + 10, 4, W - BOX_W - 4)
             const tipY = showAbove ? sy - BOX_H - 10 : sy + 10
-
             return (
               <g pointerEvents="none">
-                <rect
-                  x={tipX} y={tipY} width={BOX_W} height={BOX_H} rx="4"
-                  fill="rgba(4,18,31,0.93)" stroke="rgba(91,200,245,0.25)" strokeWidth="1"
-                />
+                <rect x={tipX} y={tipY} width={BOX_W} height={BOX_H} rx="4"
+                  fill="rgba(4,18,31,0.93)" stroke="rgba(91,200,245,0.25)" strokeWidth="1" />
                 {lines.map((line, i) => (
-                  <text
-                    key={i}
-                    x={tipX + PAD}
-                    y={tipY + PAD + 4 + i * LINE_H}
+                  <text key={i} x={tipX + PAD} y={tipY + PAD + 4 + i * LINE_H}
                     fontSize="11"
                     fill={i === 0 ? '#5bc8f5' : 'rgba(200,235,255,0.65)'}
                     fontWeight={i === 0 ? 'bold' : 'normal'}
-                    fontFamily="monospace"
-                  >
+                    fontFamily="monospace">
                     {line}
                   </text>
                 ))}
