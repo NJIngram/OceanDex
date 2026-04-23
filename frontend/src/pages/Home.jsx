@@ -9,6 +9,8 @@ export default function Explore() {
   const [creatures, setCreatures] = useState([])
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
+  const [states, setStates] = useState([])
+  const [stateId, setStateId] = useState('')
   const [listLoading, setListLoading] = useState(true)
   const [selectedId, setSelectedId] = useState(null)
   const [detail, setDetail] = useState(null)
@@ -21,6 +23,7 @@ export default function Explore() {
     const params = new URLSearchParams()
     if (search) params.set('q', search)
     if (category) params.set('category', category)
+    if (stateId) params.set('state_id', stateId)
     fetch(`/api/creatures?${params}`)
       .then((r) => {
         if (!r.ok) throw new Error('Fetch failed')
@@ -35,7 +38,13 @@ export default function Explore() {
         setCreatures([])
         setListLoading(false)
       })
-  }, [search, category])
+  }, [search, category, stateId])
+
+  useEffect(() => {
+    fetch('/api/states')
+      .then(r => r.json())
+      .then(setStates)
+  }, [])
 
   useEffect(() => {
     if (!selectedId) return
@@ -86,6 +95,17 @@ export default function Explore() {
             ))}
           </div>
         </div>
+
+        <select
+          className="state-select"
+          value={stateId}
+          onChange={(e) => setStateId(e.target.value)}
+        >
+          <option value="">All States</option>
+          {states.map((s) => (
+            <option key={s.id} value={s.id}>{s.name}</option>
+          ))}
+        </select>
 
         <div className="species-list">
           {listLoading ? (
