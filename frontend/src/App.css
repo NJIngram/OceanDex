@@ -1059,8 +1059,7 @@ a { text-decoration: none; color: inherit; }
   border-radius: 12px;
   overflow: hidden;
   margin: 0 24px 24px;
-  display: flex;
-  align-items: stretch;
+  background: #04121f;
 }
 
 .map-controls {
