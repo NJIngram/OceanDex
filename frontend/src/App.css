@@ -1054,11 +1054,12 @@ a { text-decoration: none; color: inherit; }
 }
 
 .map-wrapper {
-  flex: 1;
-  min-height: 0;
+  width: min(860px, calc(100% - 48px));
+  align-self: center;
+  aspect-ratio: 960 / 500;
   border-radius: 12px;
   overflow: hidden;
-  margin: 0 24px 24px;
+  margin-bottom: 24px;
   background: #04121f;
 }
 

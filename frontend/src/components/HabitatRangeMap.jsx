@@ -116,7 +116,6 @@ export default function HabitatRangeMap({ markers, caption, habitat, name }) {
       <div style={styles.mapContainer}>
         <svg
           viewBox="0 0 360 180"
-          preserveAspectRatio="none"
           style={styles.svg}
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -187,16 +186,14 @@ const styles = {
   },
   mapContainer: {
     width: '100%',
-    height: '120px',
     borderRadius: '8px',
     border: '1px solid rgba(91,200,245,0.1)',
     background: '#0a1f2e',
     overflow: 'hidden',
-    position: 'relative',
   },
   svg: {
     width: '100%',
-    height: '100%',
+    height: 'auto',
     display: 'block',
   },
   caption: {
