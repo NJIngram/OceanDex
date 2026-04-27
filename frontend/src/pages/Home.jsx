@@ -32,7 +32,8 @@ export default function Explore() {
       .then((data) => {
         setCreatures(data)
         setListLoading(false)
-        if (data.length > 0) setSelectedId(data[0].id)
+        // Only auto-select on desktop — mobile shows list first
+        if (data.length > 0 && window.innerWidth >= 768) setSelectedId(data[0].id)
       })
       .catch(() => {
         setCreatures([])
@@ -70,7 +71,7 @@ export default function Explore() {
   }, [selectedId])
 
   return (
-    <div className="explore">
+    <div className={`explore ${selectedId ? 'detail-active' : ''}`}>
       <aside className="sidebar">
         <div className="sidebar-filters">
           <input
@@ -126,6 +127,9 @@ export default function Explore() {
       </aside>
 
       <div className="detail-col">
+        <button className="mobile-back" onClick={() => setSelectedId(null)}>
+          ← Back to list
+        </button>
         {detailLoading ? (
           <div className="detail-empty"><p>Loading...</p></div>
         ) : detail ? (

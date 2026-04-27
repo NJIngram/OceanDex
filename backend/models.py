@@ -94,6 +94,9 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
     role = Column(String, default="user")  # "user" | "admin"
+    user_type = Column(String, default="enthusiast")  # enthusiast | fisher | marine_biologist
+    mb_status = Column(String, nullable=True)  # None | pending | approved | rejected
+    mb_credential = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     submissions = relationship(

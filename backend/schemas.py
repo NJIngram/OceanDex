@@ -205,6 +205,8 @@ class UserRegister(BaseModel):
     email: str
     username: str
     password: str = Field(min_length=8, max_length=72)
+    user_type: str = "enthusiast"
+    mb_credential: Optional[str] = None
 
 
 class UserLogin(BaseModel):
@@ -217,6 +219,9 @@ class UserOut(BaseModel):
     email: str
     username: str
     role: str
+    user_type: str
+    mb_status: Optional[str]
+    mb_credential: Optional[str]
 
     class Config:
         from_attributes = True
@@ -225,6 +230,13 @@ class UserOut(BaseModel):
 class TokenOut(BaseModel):
     access_token: str
     user: UserOut
+
+
+class UserSettingsUpdate(BaseModel):
+    user_type: Optional[str] = None
+    mb_credential: Optional[str] = None
+    current_password: Optional[str] = None
+    new_password: Optional[str] = Field(None, min_length=8, max_length=72)
 
 
 # ── Submissions ───────────────────────────────────────────────────────────────

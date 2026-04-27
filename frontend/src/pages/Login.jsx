@@ -2,9 +2,17 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+const ROLE_OPTIONS = [
+  { id: 'enthusiast',       label: 'Enthusiast',       desc: 'Ocean lover or curious explorer' },
+  { id: 'fisher',           label: 'Fisher',           desc: 'Recreational or commercial' },
+  { id: 'marine_biologist', label: 'Marine Biologist', desc: 'Requires verification' },
+]
+
 export default function Login() {
-  const [mode, setMode] = useState('login')   // 'login' | 'register'
+  const [mode, setMode] = useState('login')
   const [form, setForm] = useState({ email: '', username: '', password: '' })
+  const [userType, setUserType] = useState('enthusiast')
+  const [mbCred, setMbCred] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
@@ -19,7 +27,7 @@ export default function Login() {
     const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register'
     const body = mode === 'login'
       ? { email: form.email, password: form.password }
-      : { email: form.email, username: form.username, password: form.password }
+      : { email: form.email, username: form.username, password: form.password, user_type: userType, mb_credential: mbCred || undefined }
     try {
       const r = await fetch(endpoint, {
         method: 'POST',
@@ -75,6 +83,43 @@ export default function Login() {
             <input className="auth-input" type="password" value={form.password} onChange={set('password')}
               required minLength={mode === 'register' ? 8 : undefined} maxLength={72} />
           </label>
+
+          {mode === 'register' && (
+            <div className="auth-role-section">
+              <p className="auth-label" style={{ marginBottom: 8 }}>I am a…</p>
+              <div className="auth-role-picker">
+                {ROLE_OPTIONS.map(role => (
+                  <button
+                    key={role.id}
+                    type="button"
+                    className={`auth-role-card ${userType === role.id ? 'selected' : ''}`}
+                    onClick={() => setUserType(role.id)}
+                  >
+                    <span className="auth-role-label">{role.label}</span>
+                    <span className="auth-role-desc">{role.desc}</span>
+                  </button>
+                ))}
+              </div>
+              {userType === 'marine_biologist' && (
+                <div style={{ marginTop: 10 }}>
+                  <label className="auth-label">
+                    Credentials / Institution
+                    <textarea
+                      className="auth-input"
+                      style={{ resize: 'vertical', minHeight: 72, fontFamily: 'inherit' }}
+                      placeholder="e.g. PhD candidate at UDel, focusing on mid-Atlantic shark ecology"
+                      value={mbCred}
+                      onChange={e => setMbCred(e.target.value)}
+                      required
+                    />
+                  </label>
+                  <p style={{ fontSize: '0.75rem', color: '#475569', marginTop: 4 }}>
+                    An admin will review your credentials before granting Marine Biologist status.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {error && <p className="auth-error">{error}</p>}
 

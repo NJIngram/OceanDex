@@ -291,10 +291,15 @@ def register(body: schemas.UserRegister, db: Session = Depends(get_db)):
         raise HTTPException(status_code=409, detail="Email already registered")
     if db.query(models.User).filter(models.User.username == body.username).first():
         raise HTTPException(status_code=409, detail="Username already taken")
+    if body.user_type == "marine_biologist" and not (body.mb_credential or "").strip():
+        raise HTTPException(status_code=422, detail="Credentials are required for Marine Biologist verification")
     user = models.User(
         email=body.email,
         username=body.username,
         password_hash=auth.hash_password(body.password),
+        user_type=body.user_type,
+        mb_credential=body.mb_credential.strip() if body.mb_credential else None,
+        mb_status="pending" if body.user_type == "marine_biologist" else None,
     )
     db.add(user)
     db.commit()
@@ -313,6 +318,75 @@ def login(body: schemas.UserLogin, db: Session = Depends(get_db)):
 @app.get("/auth/me", response_model=schemas.UserOut)
 def me(current_user: models.User = Depends(auth.get_current_user)):
     return current_user
+
+
+@app.patch("/auth/me", response_model=schemas.UserOut)
+def update_settings(
+    body: schemas.UserSettingsUpdate,
+    user: models.User = Depends(auth.get_current_user),
+    db: Session = Depends(get_db),
+):
+    if body.new_password:
+        if not body.current_password or not auth.verify_password(body.current_password, user.password_hash):
+            raise HTTPException(status_code=401, detail="Current password is incorrect")
+        user.password_hash = auth.hash_password(body.new_password)
+
+    if body.user_type is not None:
+        if body.user_type == "marine_biologist":
+            if not (body.mb_credential or "").strip():
+                raise HTTPException(status_code=422, detail="Credentials are required for Marine Biologist verification")
+            user.user_type = "marine_biologist"
+            user.mb_credential = body.mb_credential.strip()
+            user.mb_status = "pending"
+        else:
+            user.user_type = body.user_type
+            user.mb_status = None
+            user.mb_credential = None
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@app.get("/admin/mb-requests", response_model=List[schemas.UserOut])
+def list_mb_requests(
+    admin: models.User = Depends(auth.require_admin),
+    db: Session = Depends(get_db),
+):
+    return db.query(models.User).filter(models.User.mb_status == "pending").all()
+
+
+@app.post("/admin/mb-requests/{user_id}/approve")
+def approve_mb(
+    user_id: int,
+    admin: models.User = Depends(auth.require_admin),
+    db: Session = Depends(get_db),
+):
+    target = db.query(models.User).filter(models.User.id == user_id).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    if target.mb_status != "pending":
+        raise HTTPException(status_code=409, detail="No pending verification for this user")
+    target.mb_status = "approved"
+    db.commit()
+    return {"detail": "Approved"}
+
+
+@app.post("/admin/mb-requests/{user_id}/reject")
+def reject_mb(
+    user_id: int,
+    admin: models.User = Depends(auth.require_admin),
+    db: Session = Depends(get_db),
+):
+    target = db.query(models.User).filter(models.User.id == user_id).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    if target.mb_status != "pending":
+        raise HTTPException(status_code=409, detail="No pending verification for this user")
+    target.mb_status = "rejected"
+    target.user_type = "enthusiast"
+    db.commit()
+    return {"detail": "Rejected"}
 
 
 # ── Submissions ───────────────────────────────────────────────────────────────

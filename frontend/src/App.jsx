@@ -8,6 +8,7 @@ import OceanMap from './pages/OceanMap'
 import Login from './pages/Login'
 import SubmitCreature from './pages/SubmitCreature'
 import AdminDashboard from './pages/AdminDashboard'
+import Settings from './pages/Settings'
 import { AuthProvider } from './context/AuthContext'
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/submit" element={<SubmitCreature />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
       </div>
