@@ -274,6 +274,9 @@ export default function OceanMap() {
             </mask>
           </defs>
 
+          {/* Full SVG background — prevents light bleed outside the sphere */}
+          <rect x="0" y="0" width={W} height={H} fill="#04121f" />
+
           {/* Ocean fill (behind everything) */}
           <path d={sphereD} fill="url(#om-ocean)" />
 

@@ -250,7 +250,7 @@ add_creature({
     ],
     "regulations": [
         {"state": "DE", "harvest_legal": True, "min_size_cm": None, "bag_limit": None,
-         "season": "May 15 – June 15 (spawning closure)", "permit_required": "Yes — DNREC commercial permit",
+         "season": "Year-round except May 15 – June 15 (spawning closure)", "permit_required": "Yes — DNREC commercial permit",
          "authority": "DNREC Division of Fish & Wildlife"},
         {"state": "NJ", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
          "season": "N/A", "permit_required": "N/A",
@@ -351,14 +351,14 @@ add_creature({
         {"region": "Barnegat Bay", "abundance": "Uncommon", "best_season": "June–September"},
     ],
     "regulations": [
-        {"state": "NJ", "harvest_legal": True, "min_size_cm": 30.5, "bag_limit": 6,
-         "season": "Year-round", "permit_required": "Yes — NJ Saltwater Recreational Registry",
+        {"state": "NJ", "harvest_legal": True, "min_size_cm": 30.5, "bag_limit": 1,
+         "season": "Year-round (1-fish possession limit)", "permit_required": "Yes — NJ Saltwater Recreational Registry",
          "authority": "NJ Division of Fish & Wildlife / ASMFC"},
-        {"state": "MD", "harvest_legal": True, "min_size_cm": 30.5, "bag_limit": 6,
-         "season": "Year-round", "permit_required": "Yes — MD Sport Fishing License",
+        {"state": "MD", "harvest_legal": True, "min_size_cm": 30.5, "bag_limit": 1,
+         "season": "Year-round (1-fish possession limit)", "permit_required": "Yes — MD Sport Fishing License",
          "authority": "MD Department of Natural Resources"},
-        {"state": "DE", "harvest_legal": True, "min_size_cm": 30.5, "bag_limit": 6,
-         "season": "Year-round", "permit_required": "Yes — DNREC license",
+        {"state": "DE", "harvest_legal": True, "min_size_cm": 30.5, "bag_limit": 1,
+         "season": "Year-round (1-fish possession limit)", "permit_required": "Yes — DNREC license",
          "authority": "DNREC Division of Fish & Wildlife"},
     ],
 })
@@ -463,6 +463,9 @@ add_creature({
         {"state": "NJ", "harvest_legal": True, "min_size_cm": None, "bag_limit": None,
          "season": "Year-round", "permit_required": "No for recreational bait use",
          "authority": "ASMFC / NJ Division of Fish & Wildlife"},
+        {"state": "DE", "harvest_legal": True, "min_size_cm": None, "bag_limit": None,
+         "season": "Year-round", "permit_required": "No for recreational bait use",
+         "authority": "ASMFC / DNREC Division of Fish & Wildlife"},
     ],
 })
 
@@ -611,6 +614,12 @@ add_creature({
         {"state": "NJ", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
          "season": "N/A", "permit_required": "N/A",
          "authority": "NOAA / NJ Division of Fish & Wildlife"},
+        {"state": "MD", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / MD Department of Natural Resources"},
+        {"state": "DE", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / DNREC Division of Fish & Wildlife"},
     ],
 })
 
@@ -705,6 +714,15 @@ add_creature({
         {"state": "US", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
          "season": "N/A", "permit_required": "N/A",
          "authority": "NOAA Fisheries / Magnuson-Stevens Act"},
+        {"state": "DE", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / DNREC Division of Fish & Wildlife"},
+        {"state": "MD", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / MD Department of Natural Resources"},
+        {"state": "NJ", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / NJ Division of Fish & Wildlife"},
     ],
 })
 
@@ -747,6 +765,15 @@ add_creature({
         {"state": "US", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
          "season": "N/A", "permit_required": "N/A",
          "authority": "NOAA Fisheries / CITES Appendix II"},
+        {"state": "DE", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / DNREC Division of Fish & Wildlife"},
+        {"state": "MD", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / MD Department of Natural Resources"},
+        {"state": "NJ", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / NJ Division of Fish & Wildlife"},
     ],
 })
 
@@ -789,6 +816,15 @@ add_creature({
         {"state": "US", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
          "season": "N/A", "permit_required": "N/A",
          "authority": "NOAA Fisheries / ESA / CITES Appendix II"},
+        {"state": "DE", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / DNREC Division of Fish & Wildlife"},
+        {"state": "MD", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / MD Department of Natural Resources"},
+        {"state": "NJ", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / NJ Division of Fish & Wildlife"},
     ],
 })
 
@@ -885,6 +921,12 @@ add_creature({
         {"state": "US", "harvest_legal": True, "min_size_cm": 8.3, "bag_limit": None,
          "season": "Year-round", "permit_required": "Yes — Federal lobster trap permit",
          "authority": "NOAA Fisheries / ASMFC"},
+        {"state": "MD", "harvest_legal": True, "min_size_cm": 8.3, "bag_limit": None,
+         "season": "Year-round", "permit_required": "Yes — MD Sport Fishing License",
+         "authority": "ASMFC / MD Department of Natural Resources"},
+        {"state": "DE", "harvest_legal": True, "min_size_cm": 8.3, "bag_limit": None,
+         "season": "Year-round", "permit_required": "Yes — DNREC license",
+         "authority": "ASMFC / DNREC Division of Fish & Wildlife"},
     ],
 })
 
@@ -929,7 +971,7 @@ add_creature({
         {"region": "Sandy Hook Bay", "abundance": "Common", "best_season": "June–September"},
     ],
     "regulations": [
-        {"state": "NJ", "harvest_legal": True, "min_size_cm": 33.0, "bag_limit": 10,
+        {"state": "NJ", "harvest_legal": True, "min_size_cm": 31.75, "bag_limit": 10,
          "season": "May 15–Jun 22 & Aug 1–Dec 31", "permit_required": "Yes — NJ Saltwater Recreational Registry",
          "authority": "MAFMC / NJ Division of Fish & Wildlife"},
         {"state": "MD", "harvest_legal": True, "min_size_cm": 33.0, "bag_limit": 15,
@@ -1504,6 +1546,9 @@ add_creature({
         {"state": "MD", "harvest_legal": True, "min_size_cm": None, "bag_limit": None,
          "season": "Year-round", "permit_required": "Yes — MD Sport Fishing License",
          "authority": "MAFMC / MD Department of Natural Resources"},
+        {"state": "DE", "harvest_legal": True, "min_size_cm": None, "bag_limit": None,
+         "season": "Year-round", "permit_required": "Yes — DNREC license",
+         "authority": "MAFMC / DNREC Division of Fish & Wildlife"},
         {"state": "US", "harvest_legal": True, "min_size_cm": None, "bag_limit": None,
          "season": "Federal quota managed", "permit_required": "Yes — Federal permit for commercial",
          "authority": "MAFMC / NOAA Fisheries"},
@@ -1746,10 +1791,10 @@ add_creature({
          "season": "March 1 – May 31, October 1 – November 30", "permit_required": "Yes — NJ Saltwater Recreational Registry",
          "authority": "ASMFC / NJ Division of Fish & Wildlife"},
         {"state": "MD", "harvest_legal": True, "min_size_cm": 27.9, "bag_limit": 5,
-         "season": "Year-round", "permit_required": "Yes — MD Sport Fishing License",
+         "season": "March 1 – May 31, October 1 – November 30", "permit_required": "Yes — MD Sport Fishing License",
          "authority": "ASMFC / MD Department of Natural Resources"},
         {"state": "DE", "harvest_legal": True, "min_size_cm": 27.9, "bag_limit": 5,
-         "season": "Year-round", "permit_required": "Yes — DNREC license",
+         "season": "March 1 – May 31, October 1 – November 30", "permit_required": "Yes — DNREC license",
          "authority": "ASMFC / DNREC Division of Fish & Wildlife"},
     ],
 })
@@ -1847,6 +1892,12 @@ add_creature({
         {"state": "MD", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
          "season": "N/A", "permit_required": "N/A",
          "authority": "NOAA / MD Department of Natural Resources"},
+        {"state": "DE", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / DNREC Division of Fish & Wildlife"},
+        {"state": "NJ", "harvest_legal": False, "min_size_cm": None, "bag_limit": 0,
+         "season": "N/A", "permit_required": "N/A",
+         "authority": "NOAA / NJ Division of Fish & Wildlife"},
     ],
 })
 
@@ -2249,6 +2300,9 @@ add_creature({
         {"state": "MD", "harvest_legal": True, "min_size_cm": None, "bag_limit": None,
          "season": "Year-round (subject to closures)", "permit_required": "No for recreational",
          "authority": "MD Department of Natural Resources"},
+        {"state": "DE", "harvest_legal": True, "min_size_cm": None, "bag_limit": None,
+         "season": "Year-round (subject to closures)", "permit_required": "No for recreational",
+         "authority": "DNREC Division of Fish & Wildlife"},
     ],
 })
 
@@ -2345,6 +2399,12 @@ add_creature({
         {"state": "US", "harvest_legal": True, "min_size_cm": 10.2, "bag_limit": None,
          "season": "Year-round", "permit_required": "Yes — Federal permit for commercial",
          "authority": "ASMFC / NOAA Fisheries"},
+        {"state": "MD", "harvest_legal": True, "min_size_cm": 10.2, "bag_limit": None,
+         "season": "Year-round", "permit_required": "Yes — MD commercial crab license",
+         "authority": "ASMFC / MD Department of Natural Resources"},
+        {"state": "DE", "harvest_legal": True, "min_size_cm": 10.2, "bag_limit": None,
+         "season": "Year-round", "permit_required": "Yes — DNREC commercial license",
+         "authority": "ASMFC / DNREC Division of Fish & Wildlife"},
     ],
 })
 

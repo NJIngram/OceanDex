@@ -9,6 +9,8 @@ export default function Explore() {
   const [creatures, setCreatures] = useState([])
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
+  const [states, setStates] = useState([])
+  const [stateId, setStateId] = useState('')
   const [listLoading, setListLoading] = useState(true)
   const [selectedId, setSelectedId] = useState(null)
   const [detail, setDetail] = useState(null)
@@ -21,6 +23,7 @@ export default function Explore() {
     const params = new URLSearchParams()
     if (search) params.set('q', search)
     if (category) params.set('category', category)
+    if (stateId) params.set('state_id', stateId)
     fetch(`/api/creatures?${params}`)
       .then((r) => {
         if (!r.ok) throw new Error('Fetch failed')
@@ -29,13 +32,20 @@ export default function Explore() {
       .then((data) => {
         setCreatures(data)
         setListLoading(false)
-        if (data.length > 0) setSelectedId(data[0].id)
+        // Only auto-select on desktop — mobile shows list first
+        if (data.length > 0 && window.innerWidth >= 768) setSelectedId(data[0].id)
       })
       .catch(() => {
         setCreatures([])
         setListLoading(false)
       })
-  }, [search, category])
+  }, [search, category, stateId])
+
+  useEffect(() => {
+    fetch('/api/states')
+      .then(r => r.json())
+      .then(setStates)
+  }, [])
 
   useEffect(() => {
     if (!selectedId) return
@@ -61,7 +71,7 @@ export default function Explore() {
   }, [selectedId])
 
   return (
-    <div className="explore">
+    <div className={`explore ${selectedId ? 'detail-active' : ''}`}>
       <aside className="sidebar">
         <div className="sidebar-filters">
           <input
@@ -87,6 +97,17 @@ export default function Explore() {
           </div>
         </div>
 
+        <select
+          className="state-select"
+          value={stateId}
+          onChange={(e) => setStateId(e.target.value)}
+        >
+          <option value="">All States</option>
+          {states.map((s) => (
+            <option key={s.id} value={s.id}>{s.name}</option>
+          ))}
+        </select>
+
         <div className="species-list">
           {listLoading ? (
             <p className="sidebar-msg">Loading...</p>
@@ -106,6 +127,9 @@ export default function Explore() {
       </aside>
 
       <div className="detail-col">
+        <button className="mobile-back" onClick={() => setSelectedId(null)}>
+          ← Back to list
+        </button>
         {detailLoading ? (
           <div className="detail-empty"><p>Loading...</p></div>
         ) : detail ? (
