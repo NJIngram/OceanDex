@@ -218,6 +218,7 @@ class UserOut(BaseModel):
     id: int
     email: str
     username: str
+    created_at: datetime
     role: str
     user_type: str
     mb_status: Optional[str]

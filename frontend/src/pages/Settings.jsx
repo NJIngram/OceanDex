@@ -24,6 +24,9 @@ export default function Settings() {
   const { user, updateUser, logout } = useAuth()
   const navigate = useNavigate()
 
+  // Account creation date
+  const accountCreated = user ? new Date(user.created_at) : null
+
   // Role section
   const [selectedType, setSelectedType] = useState(user?.user_type || 'enthusiast')
   const [mbCred, setMbCred]             = useState(user?.mb_credential || '')
@@ -190,6 +193,10 @@ export default function Settings() {
             <div className="settings-field">
               <span className="settings-field-label">Site role</span>
               <span className="settings-field-value" style={{ textTransform: 'capitalize' }}>{user.role}</span>
+            </div>
+            <div className="settings-field">
+              <span className="settings-field-label">Member since</span>
+              <span className="settings-field-value">{accountCreated ? accountCreated.toLocaleDateString() : '—'}</span>
             </div>
           </div>
           {user.mb_status === 'rejected' && (
