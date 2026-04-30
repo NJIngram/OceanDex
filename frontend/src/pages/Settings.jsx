@@ -38,9 +38,10 @@ export default function Settings() {
   const [pwSaving, setPwSaving]     = useState(false)
 
   // Delete account section
-  const [deleteConfirm, setDeleteConfirm] = useState(false)
-  const [deleteMsg, setDeleteMsg]         = useState('')
-  const [deleting, setDeleting]           = useState(false)
+  const [deleteConfirm, setDeleteConfirm]         = useState(false)
+  const [keepContributions, setKeepContributions] = useState(true)
+  const [deleteMsg, setDeleteMsg]                 = useState('')
+  const [deleting, setDeleting]                   = useState(false)
 
   // Admin application section
   const [application, setApplication]     = useState(undefined)  // undefined = loading
@@ -145,7 +146,7 @@ export default function Settings() {
   async function deleteAccount() {
     setDeleteMsg('')
     setDeleting(true)
-    const r = await fetch('/api/auth/me', { method: 'DELETE', headers: authHeaders() })
+    const r = await fetch(`/api/auth/me?keep_contributions=${keepContributions}`, { method: 'DELETE', headers: authHeaders() })
     setDeleting(false)
     if (!r.ok) {
       setDeleteMsg('Something went wrong. Please try again.')
@@ -377,6 +378,17 @@ export default function Settings() {
           ) : (
             <>
               <p className="settings-note settings-note-warn">Are you sure? This will permanently delete your account.</p>
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, margin: '12px 0', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={keepContributions}
+                  onChange={e => setKeepContributions(e.target.checked)}
+                  style={{ marginTop: 3, accentColor: '#0ea5e9' }}
+                />
+                <span style={{ fontSize: '0.875rem', color: '#94a3b8', lineHeight: 1.5 }}>
+                  Keep my species contributions — they will be re-attributed to <em>Legacy Dex user</em>
+                </span>
+              </label>
               {deleteMsg && <p className="settings-msg" style={{ color: '#ef4444' }}>{deleteMsg}</p>}
               <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
                 <button className="btn-danger" onClick={deleteAccount} disabled={deleting}>

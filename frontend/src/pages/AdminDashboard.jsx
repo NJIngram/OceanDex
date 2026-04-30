@@ -273,7 +273,7 @@ export default function AdminDashboard() {
                       <span className="admin-card-cat">{cd.category}</span>
                     </div>
                     <div className="admin-card-right">
-                      <span className="admin-card-submitter">by {sub.submitter.username}</span>
+                      <span className="admin-card-submitter">by {sub.submitter?.username ?? sub.submitter_name ?? 'Unknown'}</span>
                       <span className="admin-card-date">{new Date(sub.created_at).toLocaleDateString()}</span>
                       <span className="admin-status-dot" style={{ background: STATUS_COLORS[sub.status] }} />
                       <span className="admin-chevron">{isOpen ? '▲' : '▼'}</span>

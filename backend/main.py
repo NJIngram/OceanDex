@@ -350,9 +350,18 @@ def update_settings(
 
 @app.delete("/auth/me", status_code=204)
 def delete_account(
+    keep_contributions: bool = Query(False),
     user: models.User = Depends(auth.get_current_user),
     db: Session = Depends(get_db),
 ):
+    if keep_contributions:
+        db.query(models.CreatureSubmission).filter(
+            models.CreatureSubmission.submitted_by == user.id
+        ).update({"submitted_by": None, "submitter_name": "Legacy Dex user"})
+    else:
+        db.query(models.CreatureSubmission).filter(
+            models.CreatureSubmission.submitted_by == user.id
+        ).delete()
     db.delete(user)
     db.commit()
 
@@ -506,6 +515,7 @@ def create_submission(
 ):
     submission = models.CreatureSubmission(
         submitted_by=user.id,
+        submitter_name=user.username,
         creature_data=body.model_dump(),
     )
     db.add(submission)

@@ -110,7 +110,8 @@ class CreatureSubmission(Base):
     __tablename__ = "creature_submissions"
 
     id = Column(Integer, primary_key=True, index=True)
-    submitted_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    submitted_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    submitter_name = Column(String, nullable=True)
     status = Column(String, default="pending")  # pending | approved | rejected
     review_note = Column(Text, nullable=True)
     reviewed_by = Column(Integer, ForeignKey("users.id"), nullable=True)

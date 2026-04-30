@@ -269,7 +269,8 @@ class SubmissionOut(BaseModel):
     creature_data: dict
     created_at: datetime
     reviewed_at: Optional[datetime]
-    submitter: UserOut
+    submitter: Optional[UserOut] = None
+    submitter_name: Optional[str] = None
 
     class Config:
         from_attributes = True
