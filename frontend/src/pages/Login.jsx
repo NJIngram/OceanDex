@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import OceanDexLogo from '../components/OceanDexLogo'
 
 const ROLE_OPTIONS = [
   { id: 'enthusiast',       label: 'Enthusiast',       desc: 'Ocean lover or curious explorer' },
@@ -54,6 +55,9 @@ export default function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
+        <div className="auth-logo-wrap" aria-hidden="true">
+          <OceanDexLogo size={84} animated={true} showLabels={false} showLegend={false} />
+        </div>
         <h1 className="auth-title">OceanDex</h1>
         <p className="auth-subtitle">Sea Life Encyclopedia</p>
 

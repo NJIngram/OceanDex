@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import OceanDexLogo from './OceanDexLogo'
 
 export default function NavBar() {
   const [facts, setFacts] = useState([])
@@ -29,6 +30,9 @@ export default function NavBar() {
     <nav className="navbar">
       <div className="navbar-main">
         <div className="navbar-brand">
+          <div className="navbar-brand-icon" aria-hidden="true">
+            <OceanDexLogo size={32} animated={true} showLabels={false} showLegend={false} />
+          </div>
           <NavLink to="/" className="navbar-logo" onClick={close}>OceanDex</NavLink>
           <span className="navbar-subtitle">Sea Life Encyclopedia</span>
         </div>
