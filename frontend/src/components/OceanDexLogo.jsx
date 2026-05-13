@@ -15,7 +15,7 @@ export default function OceanDexLogo({
   }
 
   const statusColors = {
-    LC: '#3db8e8',
+    LC: '#50c896',
     VU: '#e8a030',
     EN: '#e86030',
     CR: '#e83030',
@@ -111,14 +111,14 @@ export default function OceanDexLogo({
           </radialGradient>
 
           <linearGradient id="sweep-trail" x1="160" y1="36" x2="284" y2="160" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#3db8e8" stopOpacity="0" />
-            <stop offset="100%" stopColor="#3db8e8" stopOpacity="0.1" />
+            <stop offset="0%" stopColor="#50c896" stopOpacity="0" />
+            <stop offset="100%" stopColor="#50c896" stopOpacity="0.1" />
           </linearGradient>
         </defs>
 
         <style>{`
           .grid-line {
-            stroke: #3db8e8;
+            stroke: #50c896;
             stroke-opacity: 0.07;
             stroke-width: 0.5;
           }
@@ -130,7 +130,7 @@ export default function OceanDexLogo({
           }
 
           .bezel-tick {
-            stroke: #3db8e8;
+            stroke: #50c896;
             stroke-width: 1.5;
             stroke-opacity: 0.4;
           }
@@ -138,13 +138,14 @@ export default function OceanDexLogo({
           .cardinal-label {
             font-family: 'Courier New', monospace;
             font-size: 9px;
-            fill: #3db8e8;
+            fill: #50c896;
             fill-opacity: 0.45;
             letter-spacing: 0.5px;
           }
 
           .sweep-group {
-            transform-origin: 160px 160px;
+            transform-box: view-box;
+            transform-origin: center;
             animation: oceandex-rotate 8s linear infinite;
           }
 
@@ -156,7 +157,8 @@ export default function OceanDexLogo({
           .pulse-halo {
             fill: none;
             stroke-width: 1;
-            transform-origin: center;
+            transform-box: fill-box;
+            transform-origin: center center;
             animation: oceandex-pulse 2s ease-out infinite;
           }
 
@@ -213,8 +215,8 @@ export default function OceanDexLogo({
 
         <g className={`sweep-group ${animated ? '' : 'paused'}`}>
           <path d={`M ${c} ${c} L ${c} ${c - radii.outer} A ${radii.outer} ${radii.outer} 0 0 1 ${c + radii.outer} ${c} Z`} fill="url(#sweep-trail)" />
-          <line x1={c} y1={c} x2={c + radii.outer} y2={c} stroke="#3db8e8" strokeWidth="2.5" strokeLinecap="round" />
-          <line x1={c} y1={c} x2={c + radii.outer} y2={c} stroke="#9ef0ff" strokeWidth="1" strokeLinecap="round" />
+          <line x1={c} y1={c} x2={c + radii.outer} y2={c} stroke="#50c896" strokeWidth="2.5" strokeLinecap="round" />
+          <line x1={c} y1={c} x2={c + radii.outer} y2={c} stroke="#50c896" strokeWidth="1" strokeLinecap="round" />
         </g>
 
         <g>
@@ -255,9 +257,9 @@ export default function OceanDexLogo({
         </g>
 
         <g>
-          <circle cx={c} cy={c} r="10" fill="none" stroke="#3db8e8" strokeOpacity="0.45" strokeWidth="1" />
-          <circle cx={c} cy={c} r="5" fill="#3db8e8" />
-          <circle cx={c} cy={c} r="3" fill="#9ef0ff" />
+          <circle cx={c} cy={c} r="10" fill="none" stroke="#50c896" strokeOpacity="0.45" strokeWidth="1" />
+          <circle cx={c} cy={c} r="5" fill="#50c896" />
+          <circle cx={c} cy={c} r="3" fill="#50c896" />
         </g>
 
         <g>
